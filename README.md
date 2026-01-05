@@ -51,3 +51,12 @@ robot.display_battery(66)
 time.sleep(2)
 
 robot.stop()
+
+## Dokumentace
+
+Ke knihovně je vytvořená dokumentace ve formě webové stránky (HTML).
+
+**Jak ji zobrazit:**
+1. Stáhněte si z repozitáře soubor `Dokumentace_HTML.zip`.
+2. Rozbalte ZIP soubor ve svém počítači.
+3. Ve vzniklé složce otevřete soubor `index.html`.
