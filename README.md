@@ -51,7 +51,7 @@ robot.display_battery(66)
 time.sleep(2)
 
 robot.stop()
-
+```
 ## Dokumentace
 
 Ke knihovně je vytvořená dokumentace ve formě webové stránky (HTML).
