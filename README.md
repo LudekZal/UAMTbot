@@ -1,57 +1,52 @@
-# Knihovna pro školního robota (UAMTbot)
+# UAMTbot - Software pro školního robota
 
-Tento repozitář obsahuje ovládací knihovnu a testovací skripty pro školního robota postaveného na mikrokontroléru **Raspberry Pi Pico**.
+Tento repozitář obsahuje softwarovou architekturu a diagnostické skripty pro školního robota postaveného na mikrokontroléru Raspberry Pi Pico.
 
 ## Umístění souborů v repozitáři
 
-Repozitář je rozdělen do složek. Pro zprovoznění robota jsou klíčové tyto cesty:
+Repozitář je logicky rozdělen tak, aby odděloval hardwarové ovladače od uživatelských programů. Pro správný chod jsou klíčové tyto složky a soubory:
 
-* `LIBRARIES/Robot.py` – Hlavní knihovna s třídou pro ovládání robota.
-* `PYTHON_EXAMPLES/` – Ukázkové soubory pro testování jednotlivých periferií.
-* `PYTHON_EXAMPLES/ROBOT_EXAMPLES/` – Ukázkové soubory pro testování funkčnosti knihovny `Robot.py`.
+* **`/lib`** – Ovladače hardwarových periferií a jádro systému (`core.py`).
+* **`/prog`** – Ukázkové a testovací skripty pro jednotlivé periferie (např. `led_test.py`).
+* **`main.py`** – Hlavní spouštěcí program (stavový automat a scrollovací grafické menu).
+* **`uamtbot_config.py`** – Konfigurační soubor pro mapování pinů a povolení/zakázání jednotlivých periferií.
 
----
+## Zprovoznění
 
-## Instalace a nahrání na PICO
+Aby systém správně fungoval, je nutné zachovat strukturu složek při nahrávání do paměti Raspberry Pi Pico. Postupujte následovně:
 
-Aby kód fungoval, **je nutné ručně nahrát knihovny do paměti Raspberry Pi Pico**. Postupujte následovně:
+1. Ujistěte se, že máte na Raspberry Pi Pico nainstalovaný **MicroPython**.
+2. Připojte Pico k počítači přes USB a otevřete vývojové prostředí (např. **Thonny IDE**).
+3. V Thonny jít do Run -> Configure interpreter... a zvolit Raspberry Pi Pico, v pravém dolním rohu pak vybrat dostupný komunikační port.
+4. Do kořenového adresáře Pica zkopírujte složky **`lib`** a **`prog`**.
+5. Následně do kořenového adresáře zkopírujte i soubory **`main.py`** a **`uamtbot_config.py`**.
 
-1.  Připojte Raspberry Pi Pico k počítači a otevřete editor (Thonny IDE / VS Code).
-2.  V tomto repozitáři otevřete složku `LIBRARIES` a stáhněte si soubory:
-    * `Robot.py`
-    * `sh1106.py`
-    * `ICM42688.py`
-3.  Všechny tři soubory **nahrajte do kořenového adresáře** v Raspberry Pi Pico.
-4.  Následně otevřete složku `PYTHON_EXAMPLES/ROBOT_EXAMPLES/` a vyberte si skript, který chcete vyzkoušet.
-5.  Skript můžete spustit přímo v editoru nebo jej nahrát na Pico pod názvem `main.py` (pro automatické spuštění po startu).
+## Programování
 
----
-
-## Jak použít
-
-Pro využití knihovny ve vlastním skriptu stačí importovat třídu `Robot`.
+Díky sjednocující vrstvě je ovládání robota velmi intuitivní. Pro vytvoření vlastního programu stačí importovat konfiguraci a třídu `Robot`:
 
 ```python
-# Import knihovny (funguje, pouze pokud jsou soubory nahrané v Picu)
-from Robot import Robot
+import uamtbot_config
+from core import Robot
 import time
 
-# Inicializace
+# Inicializace (automaticky načte moduly povolené v uamtbot_config.py)
 robot = Robot()
 
-# Rozsvícení LED (červená)
-robot.leds_set(1, 255, 0, 0)
-    
-# Pípnutí
-robot.buzzer_beep()
-    
-# Zobrazení baterie na displeji
-robot.display_battery(66)
-    
+robot.leds.all(128, 0, 0)
+
+robot.buzzer.beep()
+
+# Zobrazení textu na displeji
+robot.display.clear()
+robot.display.text_centered("UAMTbot", 30)
+robot.display.show()
+
 time.sleep(2)
 
-robot.stop()
-```
+robot.clear()
+robot.leds.all(0, 0, 0)
+
 ## Dokumentace
 
 Ke knihovně je vytvořená dokumentace ve formě webové stránky (HTML).
